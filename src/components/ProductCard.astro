@@ -12,7 +12,7 @@ interface Props {
       affiliatePlatform: 'shopee' | 'amazon' | 'aliexpress' | 'shein' | 'magalu' | 'mercadolivre' | 'outros';
       category: string;
       badge?: string;
-      badgeColor?: 'purple' | 'pink' | 'amber' | 'emerald';
+      badgeColor?: 'purple' | 'pink' | 'amber' | 'emerald' | 'blue';
       rating: number;
       reviewsCount: number;
       image: string;
@@ -39,12 +39,13 @@ const platformMeta = {
 }[data.affiliatePlatform] || { name: 'Loja Parceira', bg: 'bg-purple-50 text-purple-700 border-purple-200', tag: 'Loja Parceira' };
 
 // Badge color
-const badgeColors = {
+const badgeColorClass = {
   purple: 'bg-purple-600 text-white',
   pink: 'bg-pink-500 text-white',
   amber: 'bg-amber-500 text-white',
   emerald: 'bg-emerald-600 text-white',
-}[data.badgeColor || 'purple'];
+  blue: 'bg-blue-600 text-white',
+}[data.badgeColor || 'purple'] || 'bg-purple-600 text-white';
 
 // Parse price for sorting: "R$ 139,90" -> 139.90
 const numericPrice = parseFloat(data.price.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
@@ -79,7 +80,7 @@ const numericDiscount = data.discount ? parseInt(data.discount.replace(/[^\d]/g,
     <div class="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none gap-2">
       <!-- Highlight badge -->
       {data.badge && (
-        <span class={`px-2.5 py-1 rounded-full text-[11px] font-black tracking-wide shadow-md ${badgeColors}`}>
+        <span class={`px-2.5 py-1 rounded-full text-[11px] font-black tracking-wide shadow-md ${badgeColorClass}`}>
           ★ {data.badge}
         </span>
       )}

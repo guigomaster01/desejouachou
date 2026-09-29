@@ -34,7 +34,8 @@ const badgeColors = {
   pink: 'bg-pink-500 text-white',
   amber: 'bg-amber-500 text-white',
   emerald: 'bg-emerald-600 text-white',
-}[data.badgeColor || 'purple'];
+  blue: 'bg-blue-600 text-white',
+}[data.badgeColor || 'purple'] || 'bg-purple-600 text-white';
 
 // Related products in same category
 const allProducts = await getCollection('products');

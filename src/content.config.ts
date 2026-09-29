@@ -10,10 +10,14 @@ const products = defineCollection({
     originalPrice: z.string().optional(),
     discount: z.string().optional(),
     affiliateUrl: z.string(),
-    affiliatePlatform: z.enum(['shopee', 'amazon', 'aliexpress', 'shein', 'magalu', 'mercadolivre', 'outros']).default('shopee'),
+    affiliatePlatform: z
+      .string()
+      .transform((val) => val.toLowerCase())
+      .pipe(z.enum(['shopee', 'amazon', 'aliexpress', 'shein', 'magalu', 'mercadolivre', 'outros']))
+      .default('shopee'),
     category: z.string(),
     badge: z.string().optional(),
-    badgeColor: z.enum(['purple', 'pink', 'amber', 'emerald']).default('purple'),
+    badgeColor: z.enum(['purple', 'pink', 'amber', 'emerald', 'blue']).default('purple'),
     rating: z.number().min(1).max(5).default(5),
     reviewsCount: z.number().default(0),
     image: z.string(),
