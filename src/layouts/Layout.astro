@@ -1,0 +1,109 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FloatingWhatsApp from '../components/FloatingWhatsApp.astro';
+import ToastContainer from '../components/ToastContainer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title = "Desejou Achou ✨ Achadinhos, Cupons & Ofertas Selecionadas",
+  description = "Os melhores achadinhos da internet testados e aprovados! Cupons exclusivos para Shopee, Amazon, Shein e Mercado Livre em beleza, casa, moda e tech.",
+  image = "/og-image.jpg"
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://desejouachou.com.br');
+---
+
+<!doctype html>
+<html lang="pt-BR" class="h-full bg-white text-slate-900 antialiased selection:bg-purple-200 selection:text-purple-900">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
+    
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={image} />
+
+    <!-- Google Fonts Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
+  <body class="min-h-full flex flex-col bg-white text-slate-800">
+    <div class="top-announcement bg-gradient-to-r from-purple-700 via-purple-600 to-pink-600 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium shadow-sm flex items-center justify-center gap-2">
+      <span class="animate-pulse">✨</span>
+      <span>Oie! Cupons de hoje atualizados para <strong>Shopee, Amazon e Shein</strong>!</span>
+      <a href="/cupons" class="underline font-bold hover:text-purple-200 transition-colors ml-1">Ver cupons &rarr;</a>
+    </div>
+
+    <Header />
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <Footer />
+    
+    <FloatingWhatsApp />
+    <ToastContainer />
+
+    <script is:inline>
+      // Global toast helper for copying coupons or sharing
+      window.showToast = function(message, type = 'success') {
+        const toast = document.getElementById('global-toast');
+        const text = document.getElementById('global-toast-text');
+        if (!toast || !text) return;
+        
+        text.innerText = message;
+        toast.classList.remove('hidden');
+        toast.classList.add('flex');
+        
+        clearTimeout(window._toastTimeout);
+        window._toastTimeout = setTimeout(() => {
+          toast.classList.remove('flex');
+          toast.classList.add('hidden');
+        }, 3200);
+      };
+
+      // Global copy coupon handler
+      window.copyCoupon = function(code, buttonElement) {
+        if (!code) return;
+        navigator.clipboard.writeText(code).then(() => {
+          window.showToast(`Cupom "${code}" copiado com sucesso! 💜 Cole no carrinho.`);
+          if (buttonElement) {
+            const originalText = buttonElement.innerHTML;
+            buttonElement.innerHTML = `<span>✓ Copiado!</span>`;
+            buttonElement.classList.add('bg-purple-700', 'text-white');
+            setTimeout(() => {
+              buttonElement.innerHTML = originalText;
+              buttonElement.classList.remove('bg-purple-700', 'text-white');
+            }, 2000);
+          }
+        }).catch(() => {
+          window.showToast(`Cupom: ${code}`);
+        });
+      };
+    </script>
+  </body>
+</html>

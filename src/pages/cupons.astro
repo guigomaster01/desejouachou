@@ -1,0 +1,200 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const storeCategories = [
+  {
+    store: 'Shopee',
+    logo: '🛒',
+    color: 'from-orange-500 to-amber-500',
+    badgeBg: 'bg-orange-100 text-orange-800 border-orange-200',
+    link: 'https://shopee.com.br',
+    coupons: [
+      { code: 'DESEJOU15', discount: '15% OFF', desc: 'Em qualquer compra acima de R$ 50 no app da Shopee', expires: 'Válido até o fim do mês' },
+      { code: 'FRETEGRATIS', discount: 'Frete Grátis', desc: 'Sem valor mínimo em lojas oficiais selecionadas', expires: 'Atualizado hoje' },
+      { code: 'ACHADINHOS20', discount: 'R$ 20 OFF', desc: 'Válido para itens de beleza, casa e decoração', expires: 'Restam poucos usos' },
+    ]
+  },
+  {
+    store: 'Amazon Brasil',
+    logo: '📦',
+    color: 'from-purple-800 to-indigo-900',
+    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+    link: 'https://amazon.com.br',
+    coupons: [
+      { code: 'AMAZON10', discount: 'R$ 20 OFF', desc: 'Na sua primeira compra pelo aplicativo da Amazon', expires: 'Clientes elegíveis' },
+      { code: 'PRIMEBELEZA', discount: '10% OFF', desc: 'Itens de cuidados pessoais e rotina de beleza Prime', expires: 'Oferta da semana' },
+      { code: 'LIVROS15', discount: '15% OFF', desc: 'Livros de desenvolvimento pessoal e planners', expires: 'Por tempo limitado' },
+    ]
+  },
+  {
+    store: 'Shein',
+    logo: '✨',
+    color: 'from-pink-500 to-rose-600',
+    badgeBg: 'bg-pink-100 text-pink-800 border-pink-200',
+    link: 'https://shein.com.br',
+    coupons: [
+      { code: 'SHEINMODA', discount: '15% OFF', desc: 'Em bolsas, roupas, sapatos e acessórios femininos', expires: 'Cupom oficial' },
+      { code: 'CASAQUERIDA', discount: '10% OFF', desc: 'Seção de decoração, cozinha prática e papelaria', expires: 'Válido hoje' },
+    ]
+  },
+  {
+    store: 'Mercado Livre',
+    logo: '💛',
+    color: 'from-amber-400 to-yellow-500',
+    badgeBg: 'bg-amber-100 text-amber-900 border-amber-200',
+    link: 'https://mercadolivre.com.br',
+    coupons: [
+      { code: 'MELI10', discount: '10% OFF', desc: 'Em produtos marcados com Full e envio rápido', expires: 'Restam 120 cupons' },
+      { code: 'ACHADOS25', discount: 'R$ 25 OFF', desc: 'Em compras acima de R$ 199 pelo aplicativo', expires: 'Cupom do dia' },
+    ]
+  }
+];
+---
+
+<Layout
+  title="Central de Cupons & Descontos Exclusivos - Desejou Achou ✨"
+  description="Pegue aqui seus cupons de desconto atualizados para Shopee, Amazon, Shein e Mercado Livre. Economize em suas compras de beleza, casa e moda!"
+>
+  <div class="bg-gradient-to-b from-purple-50/70 via-white to-white py-12 sm:py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      
+      <!-- Page Header -->
+      <div class="text-center max-w-2xl mx-auto space-y-4">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100 text-purple-900 text-xs font-bold uppercase tracking-wider">
+          🏷️ Economia Garantida
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-black font-display tracking-tight text-purple-950">
+          Central de <span class="text-gradient-purple">Cupons Secretos</span>
+        </h1>
+        <p class="text-slate-600 text-base leading-relaxed">
+          Copie o código com 1 clique e cole no campo de cupom antes de fechar a compra na loja parceira. Nós atualizamos esta página todos os dias! 💜
+        </p>
+      </div>
+
+      <!-- Quick Stores Navigation -->
+      <div class="flex items-center justify-center flex-wrap gap-2.5">
+        {storeCategories.map((s) => (
+          <a
+            href={`#loja-${s.store.toLowerCase().replace(/\s+/g, '-')}`}
+            class="px-4 py-2 rounded-full bg-white border border-purple-200 text-xs sm:text-sm font-bold text-purple-900 hover:bg-purple-100 hover:border-purple-300 transition-all shadow-sm"
+          >
+            <span>{s.logo} {s.store}</span>
+          </a>
+        ))}
+      </div>
+
+      <!-- Stores & Coupons Lists -->
+      <div class="space-y-12">
+        {storeCategories.map((s) => (
+          <section
+            id={`loja-${s.store.toLowerCase().replace(/\s+/g, '-')}`}
+            class="bg-white rounded-3xl p-6 sm:p-8 border border-purple-100 shadow-lg space-y-6"
+          >
+            <!-- Store Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-purple-100">
+              <div class="flex items-center gap-3">
+                <span class="text-3xl sm:text-4xl">{s.logo}</span>
+                <div>
+                  <h2 class="text-2xl font-black font-display text-purple-950">
+                    Cupons {s.store}
+                  </h2>
+                  <p class="text-xs text-slate-500">
+                    Clique em copiar e use diretamente no site ou app oficial
+                  </p>
+                </div>
+              </div>
+
+              <a
+                href={s.link}
+                target="_blank"
+                rel="nofollow sponsored noopener"
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 transition-colors"
+              >
+                <span>Ir para {s.store}</span>
+                <svg class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+              </a>
+            </div>
+
+            <!-- Coupons Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {s.coupons.map((c) => (
+                <div class="bg-purple-50/50 rounded-2xl p-5 border border-purple-200/80 flex flex-col justify-between space-y-4 hover:border-purple-300 transition-colors">
+                  
+                  <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm font-black text-pink-600 bg-pink-100/80 px-2.5 py-0.5 rounded-md">
+                        {c.discount}
+                      </span>
+                      <span class="text-[11px] text-slate-500 font-medium">
+                        ⏳ {c.expires}
+                      </span>
+                    </div>
+
+                    <p class="text-xs text-slate-700 font-medium leading-relaxed">
+                      {c.desc}
+                    </p>
+                  </div>
+
+                  <!-- Coupon Code Box + Copy -->
+                  <div class="pt-3 border-t border-dashed border-purple-200 flex items-center justify-between gap-2">
+                    <div class="bg-white border border-purple-200 px-3 py-1.5 rounded-xl font-mono text-sm font-black text-purple-950 tracking-wider select-all shadow-inner">
+                      {c.code}
+                    </div>
+
+                    <button
+                      type="button"
+                      onclick={`window.copyCoupon('${c.code}', this)`}
+                      class="px-4 py-2 rounded-xl text-xs font-bold bg-purple-700 hover:bg-purple-800 text-white shadow-sm transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
+                    >
+                      <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
+                      </svg>
+                      <span>Copiar</span>
+                    </button>
+                  </div>
+
+                </div>
+              ))}
+            </div>
+
+          </section>
+        ))}
+      </div>
+
+      <!-- How to use coupons step by step -->
+      <section class="bg-purple-900 text-white rounded-3xl p-8 sm:p-10 shadow-xl space-y-8">
+        <div class="text-center max-w-xl mx-auto space-y-2">
+          <h2 class="text-2xl sm:text-3xl font-black font-display">
+            Como usar os cupons no carrinho? 🛒
+          </h2>
+          <p class="text-purple-200 text-xs sm:text-sm">
+            Siga este passo a passo simples para economizar sempre:
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+          <div class="bg-purple-800/60 p-6 rounded-2xl border border-purple-700 space-y-2">
+            <span class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center font-black mx-auto text-sm">1</span>
+            <h3 class="font-bold text-base text-white">Copie o Cupom</h3>
+            <p class="text-xs text-purple-200">Clique no botão "Copiar" ao lado do cupom desejado aqui no site.</p>
+          </div>
+
+          <div class="bg-purple-800/60 p-6 rounded-2xl border border-purple-700 space-y-2">
+            <span class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center font-black mx-auto text-sm">2</span>
+            <h3 class="font-bold text-base text-white">Abra a Loja</h3>
+            <p class="text-xs text-purple-200">Acesse o produto através dos nossos links confiáveis e adicione à sacola.</p>
+          </div>
+
+          <div class="bg-purple-800/60 p-6 rounded-2xl border border-purple-700 space-y-2">
+            <span class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center font-black mx-auto text-sm">3</span>
+            <h3 class="font-bold text-base text-white">Cole e Aproveite!</h3>
+            <p class="text-xs text-purple-200">No campo "Cupom de Desconto" cole o código antes de pagar. Prontinho!</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</Layout>

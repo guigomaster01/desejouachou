@@ -1,0 +1,148 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const faqs = [
+  {
+    q: 'Eu pago mais caro ao comprar através dos links do Desejou Achou?',
+    a: 'De jeito nenhum! O preço do produto é exatamente o mesmo (e muitas vezes até mais barato por causa dos cupons exclusivos que conseguimos e compartilhamos aqui). Nós apenas recebemos uma pequena comissão da loja pelo encaminhamento, sem cobrar 1 centavo a mais de você.',
+  },
+  {
+    q: 'É seguro comprar pelos links recomendados aqui?',
+    a: 'Sim, 100% seguro! Todos os nossos links direcionam você diretamente para os aplicativos ou sites oficiais da Shopee, Amazon Brasil, Shein e Mercado Livre. O pagamento, envio e garantia são feitos pelas próprias plataformas.',
+  },
+  {
+    q: 'Como você escolhe quais achadinhos postar?',
+    a: 'Eu tenho um critério super rigoroso! Só posto itens que eu comprei e aprovei, ou produtos com mais de 500 avaliações positivas comprovadas com fotos de clientes reais. Nada de produtos fakes ou de qualidade duvidosa.',
+  },
+  {
+    q: 'Como posso pedir indicação de algum produto que estou procurando?',
+    a: 'Você pode me mandar uma mensagem direta no nosso Instagram ou no canal VIP do WhatsApp! Sempre respondo as seguidoras e busco o melhor preço do que vocês precisarem.',
+  },
+];
+---
+
+<Layout
+  title="Sobre Mim & Como Funciona a Curadoria - Desejou Achou ✨"
+  description="Conheça a história por trás do Desejou Achou. Uma curadoria feminina apaixonada por achar as melhores ofertas da internet com total transparência."
+>
+  <div class="bg-gradient-to-b from-purple-50/70 via-white to-white py-12 sm:py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      
+      <!-- Bio Header -->
+      <div class="text-center space-y-4">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100 text-purple-900 text-xs font-bold uppercase tracking-wider">
+          💜 Por Trás dos Achadinhos
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-black font-display tracking-tight text-purple-950">
+          Oie! Seja muito bem-vinda ao <br class="hidden sm:inline" />
+          <span class="text-gradient-purple">Desejou Achou ✨</span>
+        </h1>
+      </div>
+
+      <!-- Creator Presentation Card -->
+      <div class="bg-white rounded-3xl p-6 sm:p-10 border border-purple-100 shadow-xl grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        
+        <div class="md:col-span-5 relative">
+          <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-lg border-2 border-purple-200">
+            <img
+              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=700&q=80"
+              alt="Curadora do Desejou Achou"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div class="absolute -bottom-3 -right-3 bg-purple-700 text-white p-3 rounded-2xl shadow-lg text-center">
+            <span class="block text-base font-black">100%</span>
+            <span class="block text-[10px] font-semibold uppercase">Independente</span>
+          </div>
+        </div>
+
+        <div class="md:col-span-7 space-y-4 text-slate-700 leading-relaxed text-sm sm:text-base">
+          <h2 class="text-2xl font-bold font-display text-purple-950">
+            "Criei esse cantinho pra você nunca mais se arrepender de uma comprinha online!"
+          </h2>
+          <p>
+            Sempre fui a amiga do grupo que todo mundo procurava antes de comprar qualquer coisa: <em>'Amiga, essa escova secadora é boa mesmo?'</em>, <em>'Será que esse copo térmico não vaza?'</em>, <em>'Tem algum cupom sobrando pra Shopee hoje?'</em>.
+          </p>
+          <p>
+            Percebi que a internet está lotada de produtos virais prometendo milagres, mas que na prática quebram em uma semana ou custam o dobro do que realmente valem.
+          </p>
+          <p>
+            O <strong>Desejou Achou</strong> nasceu justamente como o filtro de confiança que eu gostaria que existisse: uma curadoria feita de mulher para mulher, com dicas reais, cupons honestos e o carinho que você merece ao investir seu dinheiro suado! 💜
+          </p>
+        </div>
+
+      </div>
+
+      <!-- 3 Pilares da Nossa Curadoria -->
+      <div class="space-y-6">
+        <h2 class="text-2xl sm:text-3xl font-black font-display text-center text-purple-950">
+          Nossos 3 Pilares de Confiança 🛡️
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-purple-50/70 p-6 rounded-3xl border border-purple-100 space-y-3">
+            <span class="text-3xl">🔍</span>
+            <h3 class="font-bold text-lg text-purple-950">Filtro Antigilada</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Analisamos histórico de preços, reputação da loja e centenas de avaliações com foto de compradores reais antes de postar qualquer link.
+            </p>
+          </div>
+
+          <div class="bg-purple-50/70 p-6 rounded-3xl border border-purple-100 space-y-3">
+            <span class="text-3xl">🏷️</span>
+            <h3 class="font-bold text-lg text-purple-950">Menor Preço Real</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Garantimos que o link direciona para a melhor oferta vigente na Shopee, Amazon, Shein ou Mercado Livre, combinando cupons válidos.
+            </p>
+          </div>
+
+          <div class="bg-purple-50/70 p-6 rounded-3xl border border-purple-100 space-y-3">
+            <span class="text-3xl">🤝</span>
+            <h3 class="font-bold text-lg text-purple-950">Transparência Total</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Somos 100% transparentes sobre programas de afiliados. Se um produto não for bom, nós simplesmente não indicamos, sem exceções.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Accordion -->
+      <div class="space-y-6 pt-6">
+        <h2 class="text-2xl sm:text-3xl font-black font-display text-center text-purple-950">
+          Dúvidas Frequentes (FAQ) 💬
+        </h2>
+
+        <div class="space-y-4">
+          {faqs.map((faq) => (
+            <div class="bg-white rounded-2xl p-5 border border-purple-100 shadow-sm space-y-2">
+              <h3 class="font-bold text-base text-purple-950 flex items-center gap-2">
+                <span class="text-purple-600">✦</span>
+                <span>{faq.q}</span>
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed pl-5">
+                {faq.a}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- CTA to join community -->
+      <div class="text-center p-8 bg-gradient-to-r from-purple-700 to-pink-600 rounded-3xl text-white space-y-4 shadow-xl">
+        <h3 class="text-2xl font-black font-display">Vamos nos conectar? 💜</h3>
+        <p class="text-purple-100 text-sm max-w-md mx-auto">
+          Entre no nosso grupo VIP de ofertas no WhatsApp e acompanhe os achados em tempo real todos os dias!
+        </p>
+        <a
+          href="https://chat.whatsapp.com"
+          target="_blank"
+          rel="noopener"
+          class="inline-block px-7 py-3 rounded-full bg-white text-purple-950 font-bold text-sm shadow-md hover:bg-purple-50 transition-colors"
+        >
+          Entrar no WhatsApp VIP &rarr;
+        </a>
+      </div>
+
+    </div>
+  </div>
+</Layout>

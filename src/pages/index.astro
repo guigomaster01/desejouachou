@@ -1,0 +1,114 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import CouponBanner from '../components/CouponBanner.astro';
+import CategoryFilter from '../components/CategoryFilter.astro';
+import ProductCard from '../components/ProductCard.astro';
+import VipGroupBanner from '../components/VipGroupBanner.astro';
+
+// Fetch all markdown products
+const allProducts = await getCollection('products');
+
+// Sort by date descending
+const sortedProducts = allProducts.sort((a, b) => {
+  const dateA = new Date(a.data.publishDate).getTime();
+  const dateB = new Date(b.data.publishDate).getTime();
+  return dateB - dateA;
+});
+
+// Category icons map
+const categoryIcons: Record<string, string> = {
+  'Beleza & Cabelo': '💅',
+  'Casa & Cozinha': '🍳',
+  'Moda & Acessórios': '👗',
+  'Achados Tech': '🎧',
+  'Organização': '📦',
+};
+
+// Compute categories with counts
+const categoryMap = new Map<string, number>();
+for (const p of allProducts) {
+  const cat = p.data.category;
+  categoryMap.set(cat, (categoryMap.get(cat) || 0) + 1);
+}
+
+const categoriesList = Array.from(categoryMap.entries()).map(([name, count]) => ({
+  name,
+  count,
+  icon: categoryIcons[name] || '✨',
+}));
+---
+
+<Layout
+  title="Desejou Achou ✨ Achadinhos Virais, Cupons & Ofertas Selecionadas"
+  description="Os melhores achadinhos femininos da Shopee, Amazon, Shein e Mercado Livre. Produtos testados, resenhas sinceras e cupons exclusivos diários!"
+>
+  <!-- Hero Section with welcome & creator identity -->
+  <Hero />
+
+  <!-- Interactive Coupon Banner -->
+  <CouponBanner />
+
+  <!-- Main Products Catalog Section -->
+  <section id="produtos" class="py-16 sm:py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-2xl mx-auto space-y-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 text-purple-800 text-xs font-bold uppercase tracking-wider">
+          🛍️ Vitrine Virtual
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-black font-display tracking-tight text-purple-950">
+          Achadinhos & Ofertas Selecionadas
+        </h2>
+        <p class="text-slate-600 text-sm sm:text-base">
+          Tudo que está bombando nas redes, testado e com o melhor custo-benefício garantido.
+        </p>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <CategoryFilter
+        categories={categoriesList}
+        totalCount={allProducts.length}
+      />
+
+      <!-- Products Grid -->
+      <div
+        id="products-grid"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-7"
+      >
+        {sortedProducts.map((product) => (
+          <ProductCard product={product} />
+        ))}
+      </div>
+
+      <!-- Empty State (when search has 0 results) -->
+      <div
+        id="empty-state"
+        class="hidden flex-col items-center justify-center text-center py-16 px-4 bg-purple-50/50 rounded-3xl border border-dashed border-purple-200"
+      >
+        <div class="w-16 h-16 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-2xl mb-4">
+          🔍
+        </div>
+        <h3 class="text-xl font-bold text-purple-950 mb-1">
+          Nenhum achadinho encontrado
+        </h3>
+        <p class="text-sm text-slate-500 max-w-md mb-6">
+          Tente buscar com outras palavras ou remova os filtros selecionados para ver todas as opções disponíveis.
+        </p>
+        <button
+          type="button"
+          onclick="window.resetFilters()"
+          class="px-6 py-2.5 rounded-full bg-purple-700 text-white font-bold text-sm shadow-md hover:bg-purple-800 transition-colors"
+        >
+          Limpar Filtros e Ver Todos
+        </button>
+      </div>
+
+      <!-- Community VIP Group Banner -->
+      <VipGroupBanner />
+
+    </div>
+  </section>
+</Layout>

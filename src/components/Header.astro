@@ -1,0 +1,170 @@
+---
+const pathname = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-purple-100 transition-all">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20 gap-4">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center gap-3 group shrink-0">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-700 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-md shadow-purple-500/20 group-hover:scale-105 group-hover:shadow-purple-500/35 transition-all">
+          <svg class="w-6 h-6 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-xl sm:text-2xl font-black font-display tracking-tight text-purple-950 flex items-center gap-1">
+            Desejou<span class="text-purple-600">Achou</span>
+            <span class="text-pink-500 text-sm">✦</span>
+          </span>
+          <span class="text-[11px] font-medium text-purple-500 uppercase tracking-wider -mt-1 hidden xs:block">
+            Achadinhos & Cupons
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Search Bar -->
+      <div class="hidden md:flex flex-1 max-w-md mx-4">
+        <div class="relative w-full">
+          <input
+            type="text"
+            id="nav-search-input"
+            placeholder="Buscar secador, copo térmico, espelho..."
+            class="w-full pl-10 pr-4 py-2.5 bg-purple-50/60 border border-purple-200/80 rounded-full text-sm text-purple-950 placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:bg-white transition-all shadow-inner"
+          />
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-purple-400">
+            <svg class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="hidden lg:flex items-center gap-1 text-sm font-semibold text-purple-900">
+        <a
+          href="/"
+          class={`px-3.5 py-2 rounded-xl transition-all ${
+            pathname === '/' ? 'text-purple-700 bg-purple-100/70 font-bold' : 'hover:text-purple-600 hover:bg-purple-50'
+          }`}
+        >
+          Início
+        </a>
+        <a
+          href="/#produtos"
+          class="px-3.5 py-2 rounded-xl hover:text-purple-600 hover:bg-purple-50 transition-all"
+        >
+          Achadinhos
+        </a>
+        <a
+          href="/cupons"
+          class={`px-3.5 py-2 rounded-xl transition-all ${
+            pathname === '/cupons' ? 'text-purple-700 bg-purple-100/70 font-bold' : 'hover:text-purple-600 hover:bg-purple-50'
+          }`}
+        >
+          Cupons & Lojas
+        </a>
+        <a
+          href="/sobre"
+          class={`px-3.5 py-2 rounded-xl transition-all ${
+            pathname === '/sobre' ? 'text-purple-700 bg-purple-100/70 font-bold' : 'hover:text-purple-600 hover:bg-purple-50'
+          }`}
+        >
+          Sobre Mim
+        </a>
+      </nav>
+
+      <!-- Right CTAs -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a
+          href="https://chat.whatsapp.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold bg-gradient-to-r from-purple-700 to-purple-600 text-white shadow-md shadow-purple-600/25 hover:from-purple-800 hover:to-purple-700 hover:shadow-purple-700/35 transition-all"
+        >
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Canal VIP 💜</span>
+        </a>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button
+          type="button"
+          id="mobile-menu-toggle"
+          class="lg:hidden p-2.5 rounded-xl text-purple-900 hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-600"
+          aria-label="Abrir menu"
+        >
+          <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mobile Drawer / Menu -->
+  <div id="mobile-menu" class="hidden lg:hidden border-t border-purple-100 bg-white/95 px-4 pt-3 pb-6 space-y-3">
+    <!-- Mobile Search -->
+    <div class="relative w-full mb-3">
+      <input
+        type="text"
+        id="mobile-nav-search"
+        placeholder="Buscar achadinhos..."
+        class="w-full pl-10 pr-4 py-2 bg-purple-50 border border-purple-200 rounded-full text-sm text-purple-950 placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-600"
+      />
+      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-purple-400">
+        <svg class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+        </svg>
+      </div>
+    </div>
+
+    <div class="flex flex-col space-y-1 font-semibold text-purple-900">
+      <a href="/" class="px-3 py-2 rounded-lg hover:bg-purple-50">Início</a>
+      <a href="/#produtos" class="px-3 py-2 rounded-lg hover:bg-purple-50">Achadinhos do Momento</a>
+      <a href="/cupons" class="px-3 py-2 rounded-lg hover:bg-purple-50">Cupons de Desconto</a>
+      <a href="/sobre" class="px-3 py-2 rounded-lg hover:bg-purple-50">Sobre a Curadoria</a>
+      <a
+        href="https://chat.whatsapp.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-2 text-center py-2.5 px-4 rounded-xl bg-purple-700 text-white font-bold"
+      >
+        Entrar no Grupo VIP de Ofertas 💜
+      </a>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  const toggleBtn = document.getElementById('mobile-menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (toggleBtn && mobileMenu) {
+    toggleBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  }
+
+  // Connect header searches with page search
+  function bindSearch(inputEl) {
+    if (!inputEl) return;
+    inputEl.addEventListener('input', (e) => {
+      const val = e.target.value;
+      const mainSearch = document.getElementById('product-search');
+      if (mainSearch) {
+        mainSearch.value = val;
+        mainSearch.dispatchEvent(new Event('input'));
+        
+        // Scroll to products if user types while looking at top
+        const productsSec = document.getElementById('produtos');
+        if (productsSec && val.length === 1) {
+          productsSec.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+  }
+
+  bindSearch(document.getElementById('nav-search-input'));
+  bindSearch(document.getElementById('mobile-nav-search'));
+</script>

@@ -1,0 +1,269 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+
+export async function getStaticPaths() {
+  const products = await getCollection('products');
+  return products.map((product) => ({
+    params: { slug: product.id },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const { data, id } = product;
+
+// Render markdown body
+const { Content } = await render(product);
+
+// Platform styling
+const platformMeta = {
+  shopee: { name: 'Shopee', bg: 'bg-orange-50 text-orange-700 border-orange-200', tag: 'Shopee' },
+  amazon: { name: 'Amazon', bg: 'bg-amber-50 text-amber-900 border-amber-200', tag: 'Amazon' },
+  shein: { name: 'Shein', bg: 'bg-pink-50 text-pink-700 border-pink-200', tag: 'Shein' },
+  mercadolivre: { name: 'Mercado Livre', bg: 'bg-yellow-50 text-yellow-800 border-yellow-200', tag: 'Mercado Livre' },
+  aliexpress: { name: 'AliExpress', bg: 'bg-red-50 text-red-700 border-red-200', tag: 'AliExpress' },
+  magalu: { name: 'Magalu', bg: 'bg-blue-50 text-blue-700 border-blue-200', tag: 'Magalu' },
+  outros: { name: 'Loja Parceira', bg: 'bg-purple-50 text-purple-700 border-purple-200', tag: 'Loja Parceira' },
+}[data.affiliatePlatform] || { name: 'Loja Parceira', bg: 'bg-purple-50 text-purple-700 border-purple-200', tag: 'Loja Parceira' };
+
+// Badge color
+const badgeColors = {
+  purple: 'bg-purple-600 text-white',
+  pink: 'bg-pink-500 text-white',
+  amber: 'bg-amber-500 text-white',
+  emerald: 'bg-emerald-600 text-white',
+}[data.badgeColor || 'purple'];
+
+// Related products in same category
+const allProducts = await getCollection('products');
+const relatedProducts = allProducts
+  .filter((p) => p.id !== id && p.data.category === data.category)
+  .slice(0, 3);
+---
+
+<Layout
+  title={`${data.title} - Desejou Achou ✨`}
+  description={data.description}
+  image={data.image}
+>
+  <div class="bg-gradient-to-b from-purple-50/50 via-white to-white py-8 sm:py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      
+      <!-- Breadcrumb Navigation -->
+      <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500 overflow-x-auto whitespace-nowrap">
+        <a href="/" class="hover:text-purple-700 transition-colors">Início</a>
+        <span>/</span>
+        <a href="/#produtos" class="hover:text-purple-700 transition-colors">{data.category}</a>
+        <span>/</span>
+        <span class="text-purple-950 font-semibold truncate max-w-xs">{data.title}</span>
+      </nav>
+
+      <!-- Main Product Showcase -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+        
+        <!-- Left: Product Image & Badges -->
+        <div class="lg:col-span-6 space-y-4 sticky top-28">
+          <div class="relative bg-white rounded-3xl p-3 border border-purple-100 shadow-xl overflow-hidden group">
+            
+            <div class="relative aspect-square rounded-2xl overflow-hidden bg-purple-50/50">
+              <img
+                src={data.image}
+                alt={data.title}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+
+            <!-- Floating Top Badges -->
+            <div class="absolute top-6 left-6 right-6 flex items-center justify-between gap-2 pointer-events-none">
+              {data.badge && (
+                <span class={`px-3 py-1 rounded-full text-xs font-black shadow-md ${badgeColors}`}>
+                  ★ {data.badge}
+                </span>
+              )}
+
+              <span class={`ml-auto px-3 py-1 rounded-full text-xs font-bold border shadow-sm ${platformMeta.bg}`}>
+                {platformMeta.name}
+              </span>
+            </div>
+
+          </div>
+
+          <!-- Trust highlights under image -->
+          <div class="grid grid-cols-3 gap-3 p-4 bg-purple-50/60 rounded-2xl border border-purple-100 text-center">
+            <div class="space-y-1">
+              <span class="block text-base">🔒</span>
+              <span class="block text-[11px] font-bold text-purple-950">Link 100% Seguro</span>
+              <span class="block text-[10px] text-slate-500">Site oficial da loja</span>
+            </div>
+            <div class="space-y-1">
+              <span class="block text-base">🏷️</span>
+              <span class="block text-[11px] font-bold text-purple-950">Melhor Preço</span>
+              <span class="block text-[10px] text-slate-500">Com cupom aplicado</span>
+            </div>
+            <div class="space-y-1">
+              <span class="block text-base">🚚</span>
+              <span class="block text-[11px] font-bold text-purple-950">Frete Grátis</span>
+              <span class="block text-[10px] text-slate-500">Consulte no app</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Details, Price, CTA & Review -->
+        <div class="lg:col-span-6 space-y-6">
+          
+          <!-- Category & Rating -->
+          <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800">
+              {data.category}
+            </span>
+            <div class="flex items-center gap-1.5 text-amber-500 text-sm font-bold">
+              <span>★</span>
+              <span>{data.rating.toFixed(1)}</span>
+              <span class="text-slate-400 font-normal">({data.reviewsCount} avaliações na loja)</span>
+            </div>
+          </div>
+
+          <!-- Product Title -->
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black font-display tracking-tight text-purple-950 leading-tight">
+            {data.title}
+          </h1>
+
+          <!-- Short description -->
+          <p class="text-base text-slate-600 leading-relaxed">
+            {data.description}
+          </p>
+
+          <!-- Price & Discount Box -->
+          <div class="p-6 rounded-3xl bg-gradient-to-br from-purple-50 to-pink-50/40 border border-purple-200/80 shadow-sm space-y-4">
+            
+            <div class="flex items-baseline gap-3">
+              <span class="text-3xl sm:text-4xl font-black font-display text-purple-800">
+                {data.price}
+              </span>
+              {data.originalPrice && (
+                <span class="text-base text-slate-400 line-through">
+                  {data.originalPrice}
+                </span>
+              )}
+              {data.discount && (
+                <span class="ml-auto text-sm font-black text-pink-600 bg-pink-100 border border-pink-200 px-3 py-1 rounded-full">
+                  {data.discount}
+                </span>
+              )}
+            </div>
+
+            <!-- Coupon Box (if any) -->
+            {data.couponCode && (
+              <div class="bg-white border-2 border-dashed border-purple-300 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+                <div class="text-center sm:text-left">
+                  <span class="block text-xs font-bold text-purple-600 uppercase tracking-wider">
+                    {data.couponDiscount ? `Economize ${data.couponDiscount} com o cupom:` : 'Cupom de desconto:'}
+                  </span>
+                  <span class="font-mono text-lg font-black text-purple-950">
+                    {data.couponCode}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onclick={`window.copyCoupon('${data.couponCode}', this)`}
+                  class="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-bold bg-purple-700 hover:bg-purple-800 text-white shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
+                >
+                  <svg class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
+                  </svg>
+                  <span>Copiar Cupom</span>
+                </button>
+              </div>
+            )}
+
+            <!-- Main Affiliate Buy Button -->
+            <a
+              href={data.affiliateUrl}
+              target="_blank"
+              rel="nofollow sponsored noopener"
+              class="w-full inline-flex items-center justify-center gap-3 py-4 px-6 rounded-2xl text-base font-bold bg-gradient-to-r from-purple-700 via-purple-600 to-pink-600 text-white shadow-xl shadow-purple-600/30 hover:shadow-purple-600/45 hover:scale-[1.01] active:scale-[0.99] transition-all"
+            >
+              <span>Comprar na {platformMeta.name}</span>
+              <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+            </a>
+
+            <p class="text-center text-[11px] text-slate-500">
+              *Você será redirecionada com segurança para a página oficial do produto na loja parceira.
+            </p>
+
+          </div>
+
+          <!-- Editorial Review & Markdown Content -->
+          <div class="border-t border-purple-100 pt-6 space-y-4">
+            <div class="flex items-center gap-3">
+              <img
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
+                alt="Curadora"
+                class="w-10 h-10 rounded-full object-cover border-2 border-purple-300"
+              />
+              <div>
+                <h3 class="text-sm font-bold text-purple-950">Resenha da Curadora</h3>
+                <p class="text-xs text-slate-500">Testado e avaliado pessoalmente</p>
+              </div>
+            </div>
+
+            <!-- Rendered markdown article -->
+            <div class="prose prose-purple max-w-none text-slate-700 text-sm sm:text-base leading-relaxed space-y-4 bg-white p-6 rounded-3xl border border-purple-100 shadow-sm">
+              <Content />
+            </div>
+          </div>
+
+          <!-- Share section -->
+          <div class="p-4 bg-purple-50/50 rounded-2xl border border-purple-100 flex items-center justify-between">
+            <span class="text-xs font-bold text-purple-900">Gostou desse achadinho?</span>
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                onclick={`navigator.clipboard.writeText(window.location.href); window.showToast('Link do achadinho copiado! 💜');`}
+                class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-purple-200 text-purple-700 hover:bg-purple-100 transition-colors cursor-pointer"
+              >
+                🔗 Copiar Link
+              </button>
+              <a
+                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Olha esse achadinho que encontrei no Desejou Achou: ${data.title} - ${Astro.url.href}`)}`}
+                target="_blank"
+                rel="noopener"
+                class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
+              >
+                WhatsApp
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Related Products in Category -->
+      {relatedProducts.length > 0 && (
+        <div class="pt-12 border-t border-purple-100 space-y-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-black font-display text-purple-950">
+              Mais achadinhos em {data.category}
+            </h2>
+            <a href="/#produtos" class="text-sm font-bold text-purple-700 hover:text-purple-900">
+              Ver todos &rarr;
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {relatedProducts.map((p) => (
+              <ProductCard product={p} />
+            ))}
+          </div>
+        </div>
+      )}
+
+    </div>
+  </div>
+</Layout>

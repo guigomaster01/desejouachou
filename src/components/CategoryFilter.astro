@@ -1,0 +1,321 @@
+---
+interface Props {
+  categories: { name: string; count: number; icon: string }[];
+  totalCount: number;
+}
+
+const { categories, totalCount } = Astro.props;
+
+const platforms = [
+  { id: 'all', name: 'Todas as Lojas' },
+  { id: 'shopee', name: 'Shopee' },
+  { id: 'amazon', name: 'Amazon' },
+  { id: 'shein', name: 'Shein' },
+  { id: 'mercadolivre', name: 'Mercado Livre' },
+];
+---
+
+<div class="space-y-6">
+  
+  <!-- Search and Sort Top Bar -->
+  <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-purple-50/70 p-4 sm:p-5 rounded-3xl border border-purple-100">
+    
+    <!-- Search Bar -->
+    <div class="relative flex-1">
+      <input
+        type="text"
+        id="product-search"
+        placeholder="O que você está procurando? (ex: secador, bolsa, copo...)"
+        class="w-full pl-11 pr-10 py-3 rounded-2xl bg-white border border-purple-200/90 text-sm text-purple-950 placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all shadow-sm"
+      />
+      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-purple-500">
+        <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+        </svg>
+      </div>
+      <button
+        type="button"
+        id="clear-search-btn"
+        class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 hidden"
+        title="Limpar busca"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Controls Row: Sort & Toggles -->
+    <div class="flex flex-wrap items-center gap-3">
+      
+      <!-- Sort Select -->
+      <div class="relative flex items-center">
+        <label for="product-sort" class="sr-only">Ordenar produtos</label>
+        <select
+          id="product-sort"
+          class="appearance-none bg-white border border-purple-200 text-purple-950 text-xs sm:text-sm font-semibold rounded-2xl pl-3.5 pr-8 py-3 focus:outline-none focus:ring-2 focus:ring-purple-600 shadow-sm cursor-pointer"
+        >
+          <option value="featured">✨ Destaques da Semana</option>
+          <option value="recent">🕐 Mais Recentes</option>
+          <option value="price-asc">🏷️ Menor Preço</option>
+          <option value="price-desc">💎 Maior Preço</option>
+          <option value="discount-desc">🔥 Maior Desconto</option>
+          <option value="rating-desc">⭐ Melhores Avaliações</option>
+        </select>
+        <div class="pointer-events-none absolute right-3 text-purple-500">
+          <svg class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Coupon Toggle -->
+      <label class="inline-flex items-center gap-2 bg-white px-3.5 py-2.5 rounded-2xl border border-purple-200 shadow-sm cursor-pointer hover:bg-purple-50/50 transition-colors">
+        <input
+          type="checkbox"
+          id="filter-coupon-only"
+          class="w-4 h-4 text-purple-600 rounded border-purple-300 focus:ring-purple-500 accent-purple-600 cursor-pointer"
+        />
+        <span class="text-xs sm:text-sm font-semibold text-purple-950 whitespace-nowrap">
+          Com Cupom 🏷️
+        </span>
+      </label>
+
+    </div>
+
+  </div>
+
+  <!-- Category Pills (Horizontal scrollable on mobile) -->
+  <div class="flex flex-col gap-2">
+    <div class="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider px-1">
+      <span>Categorias</span>
+      <span id="results-count-badge" class="text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-full font-extrabold normal-case">
+        {totalCount} achadinhos
+      </span>
+    </div>
+
+    <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="category-pills">
+      <button
+        type="button"
+        data-category="all"
+        class="category-btn active shrink-0 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold border transition-all cursor-pointer bg-purple-700 text-white border-purple-700 shadow-md shadow-purple-600/20"
+      >
+        ✨ Todas as Categorias ({totalCount})
+      </button>
+
+      {categories.map((c) => (
+        <button
+          type="button"
+          data-category={c.name.toLowerCase()}
+          class="category-btn shrink-0 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold border border-purple-100 bg-white text-purple-950 hover:bg-purple-50 hover:border-purple-200 transition-all cursor-pointer shadow-sm"
+        >
+          <span>{c.icon} {c.name}</span>
+          <span class="ml-1 text-xs opacity-75 font-normal">({c.count})</span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <!-- Platform Filter Pills -->
+  <div class="flex items-center gap-2 overflow-x-auto pb-1" id="platform-pills">
+    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-1 hidden sm:inline">
+      Lojas:
+    </span>
+    {platforms.map((p, idx) => (
+      <button
+        type="button"
+        data-platform={p.id}
+        class={`platform-btn shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
+          idx === 0
+            ? 'active bg-slate-900 text-white border-slate-900 shadow-sm'
+            : 'bg-white text-slate-600 border-slate-200 hover:border-purple-300 hover:text-purple-800'
+        }`}
+      >
+        {p.name}
+      </button>
+    ))}
+  </div>
+
+</div>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    let currentCategory = 'all';
+    let currentPlatform = 'all';
+    let currentSearch = '';
+    let couponOnly = false;
+    let currentSort = 'featured';
+
+    const searchInput = document.getElementById('product-search');
+    const clearSearchBtn = document.getElementById('clear-search-btn');
+    const couponToggle = document.getElementById('filter-coupon-only');
+    const sortSelect = document.getElementById('product-sort');
+    const countBadge = document.getElementById('results-count-badge');
+    const emptyState = document.getElementById('empty-state');
+    const productsGrid = document.getElementById('products-grid');
+
+    const categoryBtns = document.querySelectorAll('.category-btn');
+    const platformBtns = document.querySelectorAll('.platform-btn');
+
+    function filterAndSortProducts() {
+      if (!productsGrid) return;
+      const cards = Array.from(productsGrid.querySelectorAll('.product-card'));
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const title = card.getAttribute('data-title') || '';
+        const tags = card.getAttribute('data-tags') || '';
+        const category = card.getAttribute('data-category') || '';
+        const platform = card.getAttribute('data-platform') || '';
+        const hasCoupon = card.getAttribute('data-has-coupon') === 'true';
+
+        // Check search match
+        const matchesSearch = !currentSearch || title.includes(currentSearch) || tags.includes(currentSearch) || category.includes(currentSearch);
+        
+        // Check category match
+        const matchesCategory = currentCategory === 'all' || category === currentCategory;
+
+        // Check platform match
+        const matchesPlatform = currentPlatform === 'all' || platform === currentPlatform;
+
+        // Check coupon filter
+        const matchesCoupon = !couponOnly || hasCoupon;
+
+        const isVisible = matchesSearch && matchesCategory && matchesPlatform && matchesCoupon;
+
+        if (isVisible) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      // Sort visible cards
+      const visibleCards = cards.filter((c) => !c.classList.contains('hidden'));
+      visibleCards.sort((a, b) => {
+        const priceA = parseFloat(a.getAttribute('data-price')) || 0;
+        const priceB = parseFloat(b.getAttribute('data-price')) || 0;
+        const discountA = parseFloat(a.getAttribute('data-discount')) || 0;
+        const discountB = parseFloat(b.getAttribute('data-discount')) || 0;
+        const ratingA = parseFloat(a.getAttribute('data-rating')) || 0;
+        const ratingB = parseFloat(b.getAttribute('data-rating')) || 0;
+        const featA = a.getAttribute('data-featured') === 'true' ? 1 : 0;
+        const featB = b.getAttribute('data-featured') === 'true' ? 1 : 0;
+
+        switch (currentSort) {
+          case 'price-asc':
+            return priceA - priceB;
+          case 'price-desc':
+            return priceB - priceA;
+          case 'discount-desc':
+            return discountB - discountA;
+          case 'rating-desc':
+            return ratingB - ratingA;
+          case 'featured':
+          default:
+            return featB - featA;
+        }
+      });
+
+      visibleCards.forEach((card) => productsGrid.appendChild(card));
+
+      // Update counter
+      if (countBadge) {
+        countBadge.innerText = `${visibleCount} ${visibleCount === 1 ? 'achadinho' : 'achadinhos'}`;
+      }
+
+      // Handle empty state
+      if (emptyState) {
+        if (visibleCount === 0) {
+          emptyState.classList.remove('hidden');
+          emptyState.classList.add('flex');
+        } else {
+          emptyState.classList.remove('flex');
+          emptyState.classList.add('hidden');
+        }
+      }
+    }
+
+    // Category button click
+    categoryBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        categoryBtns.forEach((b) => {
+          b.classList.remove('active', 'bg-purple-700', 'text-white', 'border-purple-700', 'shadow-md', 'shadow-purple-600/20');
+          b.classList.add('bg-white', 'text-purple-950', 'border-purple-100');
+        });
+        btn.classList.add('active', 'bg-purple-700', 'text-white', 'border-purple-700', 'shadow-md', 'shadow-purple-600/20');
+        btn.classList.remove('bg-white', 'text-purple-950', 'border-purple-100');
+
+        currentCategory = btn.getAttribute('data-category') || 'all';
+        filterAndSortProducts();
+      });
+    });
+
+    // Platform button click
+    platformBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        platformBtns.forEach((b) => {
+          b.classList.remove('active', 'bg-slate-900', 'text-white', 'border-slate-900', 'shadow-sm');
+          b.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+        });
+        btn.classList.add('active', 'bg-slate-900', 'text-white', 'border-slate-900', 'shadow-sm');
+        btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
+
+        currentPlatform = btn.getAttribute('data-platform') || 'all';
+        filterAndSortProducts();
+      });
+    });
+
+    // Search input
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        currentSearch = e.target.value.toLowerCase().trim();
+        if (clearSearchBtn) {
+          clearSearchBtn.classList.toggle('hidden', currentSearch.length === 0);
+        }
+        filterAndSortProducts();
+      });
+    }
+
+    if (clearSearchBtn) {
+      clearSearchBtn.addEventListener('click', () => {
+        if (searchInput) {
+          searchInput.value = '';
+          currentSearch = '';
+          clearSearchBtn.classList.add('hidden');
+          filterAndSortProducts();
+        }
+      });
+    }
+
+    // Coupon toggle
+    if (couponToggle) {
+      couponToggle.addEventListener('change', (e) => {
+        couponOnly = e.target.checked;
+        filterAndSortProducts();
+      });
+    }
+
+    // Sort select
+    if (sortSelect) {
+      sortSelect.addEventListener('change', (e) => {
+        currentSort = e.target.value;
+        filterAndSortProducts();
+      });
+    }
+
+    // Expose reset filters globally for empty state button
+    window.resetFilters = function() {
+      if (searchInput) searchInput.value = '';
+      currentSearch = '';
+      if (clearSearchBtn) clearSearchBtn.classList.add('hidden');
+      if (couponToggle) couponToggle.checked = false;
+      couponOnly = false;
+      
+      const firstCat = document.querySelector('.category-btn[data-category="all"]');
+      if (firstCat) firstCat.click();
+
+      const firstPlat = document.querySelector('.platform-btn[data-platform="all"]');
+      if (firstPlat) firstPlat.click();
+    };
+  });
+</script>

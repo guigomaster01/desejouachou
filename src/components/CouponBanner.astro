@@ -1,0 +1,112 @@
+---
+// Coupon and Flash Promo Banner
+const storeCoupons = [
+  {
+    store: 'Shopee',
+    code: 'DESEJOU15',
+    discount: '15% OFF',
+    condition: 'Em compras acima de R$ 50',
+    color: 'from-orange-500 to-amber-500',
+    textColor: 'text-orange-600',
+    bgColor: 'bg-orange-50 border-orange-200',
+    link: 'https://shopee.com.br',
+  },
+  {
+    store: 'Amazon',
+    code: 'AMAZON10',
+    discount: 'R$ 20 OFF',
+    condition: 'Para primeira compra no app',
+    color: 'from-slate-800 to-slate-900',
+    textColor: 'text-purple-700',
+    bgColor: 'bg-purple-50 border-purple-200',
+    link: 'https://amazon.com.br',
+  },
+  {
+    store: 'Shein',
+    code: 'SHEINMODA',
+    discount: '15% OFF',
+    condition: 'Válido em moda e acessórios',
+    color: 'from-pink-500 to-rose-500',
+    textColor: 'text-pink-600',
+    bgColor: 'bg-pink-50 border-pink-200',
+    link: 'https://shein.com.br',
+  },
+  {
+    store: 'Mercado Livre',
+    code: 'MELI10',
+    discount: '10% OFF',
+    condition: 'Em produtos selecionados',
+    color: 'from-amber-400 to-yellow-500',
+    textColor: 'text-amber-700',
+    bgColor: 'bg-amber-50 border-amber-200',
+    link: 'https://mercadolivre.com.br',
+  }
+];
+---
+
+<section class="py-8 bg-gradient-to-r from-purple-900 via-purple-800 to-pink-900 text-white relative overflow-hidden">
+  <!-- Decorative background sparkle patterns -->
+  <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold uppercase tracking-wider mb-2 backdrop-blur-sm">
+          🔥 Cupons Exclusivos
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-black font-display tracking-tight text-white">
+          Pegue seu cupom antes de finalizar o carrinho!
+        </h2>
+        <p class="text-purple-200 text-sm mt-1">
+          Clique no botão para copiar o código e use diretamente na loja afiliada.
+        </p>
+      </div>
+
+      <a
+        href="/cupons"
+        class="shrink-0 inline-flex items-center gap-2 text-sm font-bold text-white bg-white/10 hover:bg-white/20 border border-white/20 px-5 py-2.5 rounded-full transition-all"
+      >
+        <span>Ver todos os cupons</span>
+        <span>&rarr;</span>
+      </a>
+    </div>
+
+    <!-- Coupons Row -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {storeCoupons.map((c) => (
+        <div class="bg-white rounded-2xl p-4 shadow-lg border border-purple-100 flex flex-col justify-between text-slate-800 relative group hover:-translate-y-1 transition-all duration-200">
+          
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-purple-900 bg-purple-100 px-2.5 py-0.5 rounded-full">
+              {c.store}
+            </span>
+            <span class="text-xs font-extrabold text-pink-600 bg-pink-50 border border-pink-200 px-2 py-0.5 rounded-md">
+              {c.discount}
+            </span>
+          </div>
+
+          <div class="my-2">
+            <p class="text-xs text-slate-500 font-medium">{c.condition}</p>
+          </div>
+
+          <!-- Coupon code with copy button -->
+          <div class="mt-3 pt-3 border-t border-dashed border-slate-200 flex items-center justify-between gap-2">
+            <div class="bg-slate-100 border border-slate-300 px-3 py-1.5 rounded-lg font-mono text-sm font-black text-slate-800 tracking-wider">
+              {c.code}
+            </div>
+
+            <button
+              type="button"
+              onclick={`window.copyCoupon('${c.code}', this)`}
+              class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-purple-600 hover:bg-purple-700 text-white shadow-sm transition-colors cursor-pointer flex items-center gap-1 active:scale-95"
+            >
+              <span>Copiar</span>
+            </button>
+          </div>
+
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
