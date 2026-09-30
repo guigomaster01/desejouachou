@@ -8,7 +8,7 @@ affiliateUrl: "https://link.amazon/B0dSlioys"
 affiliatePlatform: "AMAZON"
 category: "Cuidados com os cabelos"
 badge: "Viral do Tiktok"
-badgeColor: "red"
+badgeColor: "pink"
 rating: 4.8
 reviewsCount: 974
 image: "https://m.media-amazon.com/images/I/41OcWO275YL._AC_.jpg?auto=format&fit=crop&w=800&q=80"

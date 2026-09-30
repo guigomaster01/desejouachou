@@ -1,0 +1,1113 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Allowed values from content.config.ts
+const platforms = [
+  { value: 'shopee', label: 'Shopee', color: 'bg-orange-500' },
+  { value: 'amazon', label: 'Amazon', color: 'bg-amber-600' },
+  { value: 'mercadolivre', label: 'Mercado Livre', color: 'bg-yellow-500' },
+  { value: 'shein', label: 'Shein', color: 'bg-pink-600' },
+  { value: 'aliexpress', label: 'AliExpress', color: 'bg-red-600' },
+  { value: 'magalu', label: 'Magalu', color: 'bg-blue-600' },
+  { value: 'outros', label: 'Outra Loja', color: 'bg-purple-600' }
+];
+
+const badgeColors = [
+  { value: 'purple', label: 'Roxo (Padrão)', bgClass: 'bg-purple-600', ringClass: 'ring-purple-600' },
+  { value: 'pink', label: 'Rosa', bgClass: 'bg-pink-500', ringClass: 'ring-pink-500' },
+  { value: 'amber', label: 'Laranja / Âmbar', bgClass: 'bg-amber-500', ringClass: 'ring-amber-500' },
+  { value: 'emerald', label: 'Verde Esmeralda', bgClass: 'bg-emerald-600', ringClass: 'ring-emerald-600' },
+  { value: 'blue', label: 'Azul', bgClass: 'bg-blue-600', ringClass: 'ring-blue-600' }
+];
+
+const categories = [
+  'Beleza & Cabelo',
+  'Casa & Cozinha',
+  'Moda & Acessórios',
+  'Organização',
+  'Achados Tech',
+  'Casa',
+  'Limpeza',
+  'Outros'
+];
+---
+
+<Layout title="Gerador de Produtos (.md) ✨ Desejou Achou">
+  <div class="min-h-screen bg-slate-50/60 pb-28">
+    <!-- Header Admin Bar -->
+    <header class="bg-white border-b border-purple-100 shadow-xs sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <a href="/" class="text-xl font-black font-display bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent hover:opacity-85 transition-opacity">
+            Desejou Achou ✨
+          </a>
+          <span class="text-slate-300">/</span>
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-bold text-slate-800">Painel Gerador de Achadinhos</span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
+              Auto-Save Ativo
+            </span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+          <button
+            id="btnOpenApiKeyModal"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
+            title="Configurar chave da Gemini API"
+          >
+            <span>🤖</span>
+            <span id="apiKeyLabel">Chave Gemini IA</span>
+          </button>
+          <a
+            href="/"
+            class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold text-purple-700 hover:bg-purple-50 transition-colors"
+          >
+            Voltar para Loja &rarr;
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <!-- Quick Extract Hero Section -->
+      <section class="bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl mb-8 relative overflow-hidden">
+        <!-- Background Glow Deco -->
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-10 -top-10 w-64 h-64 bg-purple-400/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-3xl">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-purple-200 backdrop-blur-md mb-3 border border-white/10">
+            ⚡ Automação Completa de Produto (.md)
+          </span>
+          <h1 class="text-2xl sm:text-3xl font-black font-display tracking-tight text-white mb-2">
+            Cole o link do achadinho. O robô faz o resto.
+          </h1>
+          <p class="text-purple-200 text-sm mb-6 leading-relaxed">
+            Suporta <span class="text-white font-semibold">Shopee, Amazon, Mercado Livre, Shein, AliExpress e Magalu</span>. Extraímos foto, preço, nota e a inteligência artificial gera copywriting e tags prontos para o seu site!
+          </p>
+
+          <!-- Input Box -->
+          <form id="scrapeForm" class="flex flex-col sm:flex-row gap-2.5">
+            <div class="relative flex-1">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                </svg>
+              </div>
+              <input
+                type="url"
+                id="inputProductUrl"
+                placeholder="Cole o link de afiliado aqui (ex: https://s.shopee.com.br/... ou amazon.com.br/...)"
+                required
+                class="w-full pl-11 pr-4 py-3.5 bg-white text-slate-900 rounded-2xl placeholder-slate-400 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-purple-400/50 shadow-lg border-0"
+              />
+            </div>
+            <button
+              type="submit"
+              id="btnScrape"
+              class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold text-sm rounded-2xl shadow-lg hover:shadow-pink-500/25 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            >
+              <svg id="scrapeSpinner" class="hidden animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span id="btnScrapeText">⚡ Extrair Dados & IA</span>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Feedback Banner -->
+      <div id="statusAlert" class="hidden mb-6 rounded-2xl p-4 transition-all"></div>
+
+      <!-- Main Layout: Form (Left) & Preview (Right) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- LEFT COLUMN: Form (7 cols) -->
+        <div class="lg:col-span-7 space-y-6">
+          <!-- Card: Informações Básicas -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <span>📦</span> Dados do Produto
+              </h2>
+              <span class="text-xs text-slate-400">Campos sincronizados ao vivo</span>
+            </div>
+
+            <div class="space-y-4">
+              <!-- Title -->
+              <div>
+                <label for="f_title" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Título do Produto *
+                </label>
+                <input
+                  type="text"
+                  id="f_title"
+                  placeholder="Ex: Escova Secadora Multifuncional 5 em 1"
+                  required
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+
+              <!-- Affiliate URL & Platform -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="sm:col-span-2">
+                  <label for="f_affiliateUrl" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Link de Afiliado *
+                  </label>
+                  <input
+                    type="url"
+                    id="f_affiliateUrl"
+                    placeholder="https://..."
+                    required
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+                <div>
+                  <label for="f_platform" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Plataforma *
+                  </label>
+                  <select
+                    id="f_platform"
+                    class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                    {platforms.map(p => (
+                      <option value={p.value}>{p.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <!-- Image URL -->
+              <div>
+                <label for="f_image" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  URL da Imagem Principal *
+                </label>
+                <div class="flex gap-2">
+                  <input
+                    type="url"
+                    id="f_image"
+                    placeholder="https://images.unsplash.com/... ou link direto da imagem"
+                    required
+                    class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                  <button
+                    type="button"
+                    id="btnPreviewImg"
+                    class="px-3 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors"
+                  >
+                    Testar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card: Preços & Desconto -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-5">
+            <h2 class="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <span>💰</span> Valores & Promoção
+            </h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label for="f_price" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Preço Oferta *
+                </label>
+                <input
+                  type="text"
+                  id="f_price"
+                  placeholder="R$ 49,90"
+                  required
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-emerald-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              <div>
+                <label for="f_originalPrice" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Preço Original (Opcional)
+                </label>
+                <input
+                  type="text"
+                  id="f_originalPrice"
+                  placeholder="R$ 89,90"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500 line-through"
+                />
+              </div>
+
+              <div>
+                <label for="f_discount" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Desconto
+                </label>
+                <input
+                  type="text"
+                  id="f_discount"
+                  placeholder="-44%"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-pink-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Card: Categorização & Badges -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-5">
+            <h2 class="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <span>🏷️</span> Categoria, Selos & Avaliações
+            </h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="f_category" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Categoria *
+                </label>
+                <input
+                  type="text"
+                  id="f_category"
+                  list="categoryOptions"
+                  placeholder="Selecione ou digite..."
+                  required
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+                <datalist id="categoryOptions">
+                  {categories.map(c => (
+                    <option value={c} />
+                  ))}
+                </datalist>
+              </div>
+
+              <div>
+                <label for="f_badge" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Texto do Selo (Badge)
+                </label>
+                <input
+                  type="text"
+                  id="f_badge"
+                  placeholder="Ex: Queridinho do Mês, Mais Vendido"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+            </div>
+
+            <!-- Badge Color Select -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                Cor do Selo (BadgeColor) *
+              </label>
+              <div class="flex flex-wrap gap-2.5" id="badgeColorGroup">
+                {badgeColors.map((bc, idx) => (
+                  <label class="cursor-pointer">
+                    <input
+                      type="radio"
+                      name="badgeColorRadio"
+                      value={bc.value}
+                      checked={idx === 0}
+                      class="peer sr-only"
+                    />
+                    <div class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold flex items-center gap-2 transition-all peer-checked:border-purple-600 peer-checked:bg-purple-50 peer-checked:text-purple-900 shadow-2xs">
+                      <span class={`w-3 h-3 rounded-full ${bc.bgClass}`}></span>
+                      <span>{bc.label}</span>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <!-- Rating & Reviews & Featured -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+              <div>
+                <label for="f_rating" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Nota (1.0 a 5.0)
+                </label>
+                <input
+                  type="number"
+                  step="0.1"
+                  min="1"
+                  max="5"
+                  id="f_rating"
+                  value="4.9"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              <div>
+                <label for="f_reviewsCount" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Pedidos / Avaliações
+                </label>
+                <input
+                  type="number"
+                  id="f_reviewsCount"
+                  value="1890"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              <div class="flex flex-col justify-end">
+                <label class="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors">
+                  <input
+                    type="checkbox"
+                    id="f_featured"
+                    checked
+                    class="w-4 h-4 rounded text-purple-600 focus:ring-purple-500 border-slate-300"
+                  />
+                  <span class="text-xs font-bold text-slate-800">Destaque na Home ⭐</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div>
+              <label for="f_tags" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Tags (separadas por vírgula)
+              </label>
+              <input
+                type="text"
+                id="f_tags"
+                placeholder="Ex: maquiagem, skincare, quarto, amazon"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+          </div>
+
+          <!-- Card: Copywriting & Conteúdo Editorial -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-5">
+            <h2 class="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <span>✍️</span> Copywriting & Resenha (IA)
+            </h2>
+
+            <!-- Description (Max 300 chars) -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="f_description" class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Breve Descrição (Máx 300 caracteres) *
+                </label>
+                <span id="descCounter" class="text-xs font-mono font-bold text-purple-700">0 / 300</span>
+              </div>
+              <textarea
+                id="f_description"
+                rows="3"
+                maxlength="320"
+                placeholder="Uma breve descrição persuasiva de no máximo 300 caracteres para o card..."
+                required
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              ></textarea>
+              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-1">
+                <div id="descProgressBar" class="h-full bg-purple-600 w-0 transition-all duration-200"></div>
+              </div>
+            </div>
+
+            <!-- Question Title -->
+            <div>
+              <label for="f_questionTitle" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Pergunta Chamativa do Artigo (### Pergunta)
+              </label>
+              <input
+                type="text"
+                id="f_questionTitle"
+                placeholder="Ex: Por que virou meu companheiro indispensável de todo dia? 💄"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+
+            <!-- Review Text -->
+            <div>
+              <label for="f_reviewText" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Resenha / Por que gostei (Markdown)
+              </label>
+              <textarea
+                id="f_reviewText"
+                rows="4"
+                placeholder="Descreva a experiência de uso, facilidades e por que vale muito a pena..."
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500 font-sans"
+              ></textarea>
+            </div>
+
+            <!-- Positive Points -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Pontos Positivos (- Tópicos)
+                </label>
+                <button
+                  type="button"
+                  id="btnAddPoint"
+                  class="text-xs font-bold text-purple-600 hover:text-purple-800 transition-colors"
+                >
+                  + Adicionar Ponto
+                </button>
+              </div>
+              <div id="pointsContainer" class="space-y-2">
+                <!-- dynamic inputs -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Live Preview & Markdown Output (5 cols sticky) -->
+        <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-20">
+          <!-- Tab selector -->
+          <div class="flex p-1 bg-slate-200/80 rounded-2xl gap-1">
+            <button
+              id="tabBtnCard"
+              class="flex-1 py-2 rounded-xl text-xs font-bold bg-white text-purple-900 shadow-xs transition-all"
+            >
+              👁️ Card no Site
+            </button>
+            <button
+              id="tabBtnMarkdown"
+              class="flex-1 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition-all"
+            >
+              📄 Código .MD
+            </button>
+          </div>
+
+          <!-- Preview 1: Product Card -->
+          <div id="previewCardView" class="space-y-4">
+            <div class="bg-white rounded-3xl border border-purple-100 shadow-xl overflow-hidden group">
+              <!-- Image container -->
+              <div class="relative aspect-4/3 bg-slate-100 overflow-hidden">
+                <img
+                  id="p_image"
+                  src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80"
+                  alt="Preview"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                
+                <!-- Badge -->
+                <div class="absolute top-3 left-3 flex flex-col gap-1.5">
+                  <span
+                    id="p_badge"
+                    class="px-3 py-1 rounded-full text-xs font-black tracking-wide uppercase shadow-md bg-purple-600 text-white"
+                  >
+                    Destaque
+                  </span>
+                </div>
+
+                <!-- Platform Tag -->
+                <div class="absolute top-3 right-3">
+                  <span
+                    id="p_platform"
+                    class="px-2.5 py-1 rounded-full text-xs font-bold bg-white/90 backdrop-blur-md text-slate-800 shadow-md border border-slate-200"
+                  >
+                    Shopee
+                  </span>
+                </div>
+
+                <!-- Rating float -->
+                <div class="absolute bottom-3 left-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-bold text-slate-800 flex items-center gap-1 shadow-md">
+                  <span class="text-amber-500">★</span>
+                  <span id="p_rating">4.9</span>
+                  <span class="text-slate-400 font-normal">(<span id="p_reviews">1890</span>)</span>
+                </div>
+              </div>
+
+              <!-- Content -->
+              <div class="p-5 space-y-3">
+                <span id="p_category" class="text-xs font-bold uppercase tracking-wider text-purple-700">
+                  Casa & Cozinha
+                </span>
+
+                <h3 id="p_title" class="font-bold font-display text-slate-900 text-base leading-snug line-clamp-2">
+                  Título do Produto aparecerá aqui
+                </h3>
+
+                <p id="p_description" class="text-slate-600 text-xs leading-relaxed line-clamp-3">
+                  A breve descrição do produto aparecerá aqui com todos os detalhes e emojis persuasivos.
+                </p>
+
+                <!-- Price row -->
+                <div class="pt-2 flex items-baseline justify-between border-t border-slate-100">
+                  <div>
+                    <span id="p_originalPrice" class="text-xs text-slate-400 line-through mr-1.5">
+                      R$ 89,90
+                    </span>
+                    <span id="p_price" class="text-lg font-black font-display text-emerald-600">
+                      R$ 49,90
+                    </span>
+                  </div>
+                  <span id="p_discount" class="text-xs font-bold text-pink-600 bg-pink-50 px-2 py-0.5 rounded-full">
+                    -44%
+                  </span>
+                </div>
+
+                <!-- CTA Button -->
+                <div class="pt-2">
+                  <button
+                    type="button"
+                    class="w-full py-3 px-4 bg-gradient-to-r from-purple-700 to-pink-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5"
+                  >
+                    <span>Ver Oferta na Loja</span>
+                    <span>&rarr;</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview 2: Raw Markdown View -->
+          <div id="previewMarkdownView" class="hidden space-y-2">
+            <div class="bg-slate-900 text-slate-100 p-4 rounded-3xl font-mono text-xs overflow-x-auto max-h-[500px] border border-slate-800 shadow-xl leading-relaxed whitespace-pre-wrap select-all" id="rawMarkdownOutput">
+              <!-- Raw markdown here -->
+            </div>
+          </div>
+
+          <!-- Action Buttons Card -->
+          <div class="bg-white rounded-3xl p-5 border border-purple-100 shadow-xl space-y-3">
+            <button
+              type="button"
+              id="btnSaveProduct"
+              class="w-full py-4 px-6 bg-gradient-to-r from-purple-700 via-purple-600 to-pink-600 hover:from-purple-800 hover:to-pink-700 text-white font-black text-sm rounded-2xl shadow-xl hover:shadow-purple-500/25 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <svg id="saveSpinner" class="hidden animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>💾 Salvar no Projeto (.md)</span>
+            </button>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                id="btnCopyMd"
+                class="py-2.5 px-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+              >
+                <span>📋</span>
+                <span id="copyBtnText">Copiar .MD</span>
+              </button>
+              <button
+                type="button"
+                id="btnDownloadMd"
+                class="py-2.5 px-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+              >
+                <span>⬇️</span>
+                <span>Baixar .md</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Gemini API Key Modal -->
+    <div id="apiKeyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+      <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 border border-purple-100">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🤖</span>
+            <h3 class="font-bold text-lg text-slate-900 font-display">Configurar Gemini API</h3>
+          </div>
+          <button id="btnCloseApiKeyModal" class="text-slate-400 hover:text-slate-600 text-lg">&times;</button>
+        </div>
+
+        <p class="text-xs text-slate-600 leading-relaxed">
+          A API do Gemini é <strong>gratuita</strong> e usada para gerar as descrições, tags e resenhas automaticamente. Salvaremos sua chave apenas no <em>localStorage</em> do seu navegador.
+        </p>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+            Sua Chave de API (Google AI Studio)
+          </label>
+          <input
+            type="password"
+            id="inputApiKeyModal"
+            placeholder="AIzaSy..."
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <a
+            href="https://aistudio.google.com/app/apikey"
+            target="_blank"
+            rel="noopener"
+            class="inline-block mt-2 text-xs font-semibold text-purple-600 hover:underline"
+          >
+            Obter chave gratuita no Google AI Studio &rarr;
+          </a>
+        </div>
+
+        <div class="flex gap-2 justify-end pt-2">
+          <button
+            type="button"
+            id="btnSaveApiKey"
+            class="px-5 py-2.5 rounded-xl bg-purple-700 text-white font-bold text-xs hover:bg-purple-800 transition-colors shadow-md"
+          >
+            Salvar Chave
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Client-Side Controller
+  document.addEventListener('DOMContentLoaded', () => {
+    // Elements
+    const scrapeForm = document.getElementById('scrapeForm');
+    const inputProductUrl = document.getElementById('inputProductUrl');
+    const btnScrape = document.getElementById('btnScrape');
+    const btnScrapeText = document.getElementById('btnScrapeText');
+    const scrapeSpinner = document.getElementById('scrapeSpinner');
+    const statusAlert = document.getElementById('statusAlert');
+
+    // Form inputs
+    const f_title = document.getElementById('f_title');
+    const f_affiliateUrl = document.getElementById('f_affiliateUrl');
+    const f_platform = document.getElementById('f_platform');
+    const f_image = document.getElementById('f_image');
+    const f_price = document.getElementById('f_price');
+    const f_originalPrice = document.getElementById('f_originalPrice');
+    const f_discount = document.getElementById('f_discount');
+    const f_category = document.getElementById('f_category');
+    const f_badge = document.getElementById('f_badge');
+    const f_rating = document.getElementById('f_rating');
+    const f_reviewsCount = document.getElementById('f_reviewsCount');
+    const f_featured = document.getElementById('f_featured');
+    const f_tags = document.getElementById('f_tags');
+    const f_description = document.getElementById('f_description');
+    const f_questionTitle = document.getElementById('f_questionTitle');
+    const f_reviewText = document.getElementById('f_reviewText');
+    const pointsContainer = document.getElementById('pointsContainer');
+    const btnAddPoint = document.getElementById('btnAddPoint');
+    const descCounter = document.getElementById('descCounter');
+    const descProgressBar = document.getElementById('descProgressBar');
+
+    // Preview elements
+    const p_image = document.getElementById('p_image');
+    const p_badge = document.getElementById('p_badge');
+    const p_platform = document.getElementById('p_platform');
+    const p_rating = document.getElementById('p_rating');
+    const p_reviews = document.getElementById('p_reviews');
+    const p_category = document.getElementById('p_category');
+    const p_title = document.getElementById('p_title');
+    const p_description = document.getElementById('p_description');
+    const p_price = document.getElementById('p_price');
+    const p_originalPrice = document.getElementById('p_originalPrice');
+    const p_discount = document.getElementById('p_discount');
+
+    // Actions
+    const btnSaveProduct = document.getElementById('btnSaveProduct');
+    const saveSpinner = document.getElementById('saveSpinner');
+    const btnCopyMd = document.getElementById('btnCopyMd');
+    const copyBtnText = document.getElementById('copyBtnText');
+    const btnDownloadMd = document.getElementById('btnDownloadMd');
+    const rawMarkdownOutput = document.getElementById('rawMarkdownOutput');
+
+    // Tabs
+    const tabBtnCard = document.getElementById('tabBtnCard');
+    const tabBtnMarkdown = document.getElementById('tabBtnMarkdown');
+    const previewCardView = document.getElementById('previewCardView');
+    const previewMarkdownView = document.getElementById('previewMarkdownView');
+
+    // API Key Modal
+    const btnOpenApiKeyModal = document.getElementById('btnOpenApiKeyModal');
+    const apiKeyModal = document.getElementById('apiKeyModal');
+    const btnCloseApiKeyModal = document.getElementById('btnCloseApiKeyModal');
+    const btnSaveApiKey = document.getElementById('btnSaveApiKey');
+    const inputApiKeyModal = document.getElementById('inputApiKeyModal');
+    const apiKeyLabel = document.getElementById('apiKeyLabel');
+
+    // Storage for API key
+    let geminiApiKey = localStorage.getItem('GEMINI_API_KEY') || '';
+    if (geminiApiKey) {
+      apiKeyLabel.textContent = 'IA Ativa ✨';
+      inputApiKeyModal.value = geminiApiKey;
+    }
+
+    // Modal Events
+    btnOpenApiKeyModal.addEventListener('click', () => {
+      apiKeyModal.classList.remove('hidden');
+      inputApiKeyModal.value = geminiApiKey;
+    });
+
+    btnCloseApiKeyModal.addEventListener('click', () => {
+      apiKeyModal.classList.add('hidden');
+    });
+
+    btnSaveApiKey.addEventListener('click', () => {
+      geminiApiKey = inputApiKeyModal.value.trim();
+      localStorage.setItem('GEMINI_API_KEY', geminiApiKey);
+      apiKeyLabel.textContent = geminiApiKey ? 'IA Ativa ✨' : 'Chave Gemini IA';
+      apiKeyModal.classList.add('hidden');
+      showAlert('Chave salva com sucesso!', 'success');
+    });
+
+    // Color Badges classes
+    const badgeColorStyles = {
+      purple: 'bg-purple-600 text-white',
+      pink: 'bg-pink-500 text-white',
+      amber: 'bg-amber-500 text-white',
+      emerald: 'bg-emerald-600 text-white',
+      blue: 'bg-blue-600 text-white',
+    };
+
+    function getSelectedBadgeColor() {
+      const radio = document.querySelector('input[name="badgeColorRadio"]:checked');
+      return radio ? radio.value : 'purple';
+    }
+
+    function setSelectedBadgeColor(color) {
+      const target = document.querySelector(`input[name="badgeColorRadio"][value="${color}"]`);
+      if (target) target.checked = true;
+      updatePreview();
+    }
+
+    // Points builder
+    function createPointInput(value = '') {
+      const row = document.createElement('div');
+      row.className = 'flex items-center gap-2 point-row';
+      row.innerHTML = `
+        <span class="text-slate-400 font-bold text-sm">•</span>
+        <input
+          type="text"
+          value="${value.replace(/"/g, '&quot;')}"
+          placeholder="Ex: Super fácil de limpar no dia a dia"
+          class="flex-1 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        <button type="button" class="btn-remove-point text-slate-400 hover:text-red-500 p-1 text-sm">&times;</button>
+      `;
+      row.querySelector('.btn-remove-point').addEventListener('click', () => {
+        row.remove();
+        updatePreview();
+      });
+      row.querySelector('input').addEventListener('input', updatePreview);
+      return row;
+    }
+
+    function getPoints() {
+      const rows = pointsContainer.querySelectorAll('.point-row input');
+      const points = [];
+      rows.forEach(r => {
+        const val = r.value.trim();
+        if (val) points.push(val);
+      });
+      return points;
+    }
+
+    function setPoints(pointsArray) {
+      pointsContainer.innerHTML = '';
+      if (!pointsArray || pointsArray.length === 0) {
+        pointsContainer.appendChild(createPointInput(''));
+      } else {
+        pointsArray.forEach(p => pointsContainer.appendChild(createPointInput(p)));
+      }
+    }
+
+    btnAddPoint.addEventListener('click', () => {
+      pointsContainer.appendChild(createPointInput(''));
+      updatePreview();
+    });
+
+    // Alert helper
+    function showAlert(msg, type = 'info') {
+      statusAlert.className = 'mb-6 rounded-2xl p-4 font-semibold text-sm transition-all ' + 
+        (type === 'success' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' :
+         type === 'error' ? 'bg-rose-50 text-rose-800 border border-rose-200' :
+         'bg-purple-50 text-purple-900 border border-purple-200');
+      statusAlert.innerHTML = msg;
+      statusAlert.classList.remove('hidden');
+    }
+
+    // Slugify helper
+    function slugify(text) {
+      return text
+        .toString()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/[\s_-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
+    // Update Live Preview and Raw Markdown
+    function updatePreview() {
+      // Title
+      p_title.textContent = f_title.value.trim() || 'Título do Produto aparecerá aqui';
+
+      // Category
+      p_category.textContent = f_category.value.trim() || 'Categoria';
+
+      // Platform
+      p_platform.textContent = f_platform.options[f_platform.selectedIndex]?.text || 'Loja';
+
+      // Badge & Color
+      const badgeText = f_badge.value.trim() || 'Destaque';
+      const badgeCol = getSelectedBadgeColor();
+      p_badge.textContent = badgeText;
+      p_badge.className = `px-3 py-1 rounded-full text-xs font-black tracking-wide uppercase shadow-md ${badgeColorStyles[badgeCol] || badgeColorStyles.purple}`;
+
+      // Rating & Reviews
+      p_rating.textContent = f_rating.value || '5.0';
+      p_reviews.textContent = f_reviewsCount.value || '0';
+
+      // Prices
+      p_price.textContent = f_price.value.trim() || 'R$ 0,00';
+      if (f_originalPrice.value.trim()) {
+        p_originalPrice.textContent = f_originalPrice.value.trim();
+        p_originalPrice.classList.remove('hidden');
+      } else {
+        p_originalPrice.classList.add('hidden');
+      }
+
+      if (f_discount.value.trim()) {
+        p_discount.textContent = f_discount.value.trim();
+        p_discount.classList.remove('hidden');
+      } else {
+        p_discount.classList.add('hidden');
+      }
+
+      // Image
+      if (f_image.value.trim()) {
+        p_image.src = f_image.value.trim();
+      }
+
+      // Description & Character count
+      const descLen = f_description.value.length;
+      descCounter.textContent = `${descLen} / 300`;
+      const pct = Math.min((descLen / 300) * 100, 100);
+      descProgressBar.style.width = `${pct}%`;
+      
+      if (descLen > 300) {
+        descCounter.className = 'text-xs font-mono font-bold text-rose-600';
+        descProgressBar.className = 'h-full bg-rose-600 transition-all duration-200';
+      } else if (descLen > 250) {
+        descCounter.className = 'text-xs font-mono font-bold text-amber-600';
+        descProgressBar.className = 'h-full bg-amber-500 transition-all duration-200';
+      } else {
+        descCounter.className = 'text-xs font-mono font-bold text-purple-700';
+        descProgressBar.className = 'h-full bg-purple-600 transition-all duration-200';
+      }
+
+      p_description.textContent = f_description.value.trim() || 'A breve descrição do produto aparecerá aqui...';
+
+      // Generate Markdown
+      generateMarkdownString();
+    }
+
+    function generateMarkdownString() {
+      const tagsArr = f_tags.value
+        .split(',')
+        .map(t => t.trim().toLowerCase())
+        .filter(Boolean);
+
+      const tagsFormatted = tagsArr.map(t => `"${t.replace(/"/g, '')}"`).join(', ');
+
+      const points = getPoints();
+      const pointsMd = points.map(p => `- ${p}`).join('\n');
+
+      const md = `---
+title: "${(f_title.value || '').replace(/"/g, '\\"')}"
+description: "${(f_description.value || '').replace(/"/g, '\\"')}"
+price: "${f_price.value || 'R$ 0,00'}"
+originalPrice: "${f_originalPrice.value || ''}"
+discount: "${f_discount.value || ''}"
+affiliateUrl: "${f_affiliateUrl.value || ''}"
+affiliatePlatform: "${f_platform.value || 'shopee'}"
+category: "${f_category.value || 'Casa & Cozinha'}"
+badge: "${f_badge.value || 'Destaque'}"
+badgeColor: "${getSelectedBadgeColor()}"
+rating: ${Number(f_rating.value) || 5.0}
+reviewsCount: ${Number(f_reviewsCount.value) || 0}
+image: "${f_image.value || ''}"
+featured: ${f_featured.checked}
+publishDate: "${new Date().toISOString().split('T')[0]}"
+tags: [${tagsFormatted}]
+---
+
+### ${f_questionTitle.value || 'Por que virou meu companheiro indispensável de todo dia? ✨'}
+${f_reviewText.value || ''}
+
+### Pontos Positivos:
+${pointsMd}
+`;
+
+      rawMarkdownOutput.textContent = md;
+      return md;
+    }
+
+    // Attach input listeners
+    [f_title, f_affiliateUrl, f_platform, f_image, f_price, f_originalPrice, f_discount, 
+     f_category, f_badge, f_rating, f_reviewsCount, f_featured, f_tags, f_description, 
+     f_questionTitle, f_reviewText].forEach(el => {
+      el.addEventListener('input', updatePreview);
+      el.addEventListener('change', updatePreview);
+    });
+
+    document.querySelectorAll('input[name="badgeColorRadio"]').forEach(r => {
+      r.addEventListener('change', updatePreview);
+    });
+
+    // Auto calculate discount when prices change
+    f_price.addEventListener('blur', autoCalculateDiscount);
+    f_originalPrice.addEventListener('blur', autoCalculateDiscount);
+
+    function autoCalculateDiscount() {
+      const p = parseFloat(f_price.value.replace(/[^0-9,]/g, '').replace(',', '.'));
+      const o = parseFloat(f_originalPrice.value.replace(/[^0-9,]/g, '').replace(',', '.'));
+      if (o > p && o > 0) {
+        const disc = Math.round(((o - p) / o) * 100);
+        if (disc > 0 && !f_discount.value) {
+          f_discount.value = `-${disc}%`;
+          updatePreview();
+        }
+      }
+    }
+
+    // Scrape Form Submit
+    scrapeForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = inputProductUrl.value.trim();
+      if (!url) return;
+
+      btnScrape.disabled = true;
+      btnScrapeText.textContent = 'Extraindo dados...';
+      scrapeSpinner.classList.remove('hidden');
+      showAlert('🔍 Acessando loja e chamando inteligência artificial...', 'info');
+
+      try {
+        const res = await fetch('/api/admin/scrape', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url, apiKey: geminiApiKey })
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || 'Erro ao extrair');
+        }
+
+        const data = await res.json();
+
+        // Populate fields
+        f_title.value = data.title || '';
+        f_affiliateUrl.value = data.affiliateUrl || url;
+        f_platform.value = data.affiliatePlatform || 'shopee';
+        f_image.value = data.image || '';
+        f_price.value = data.price || 'R$ 49,90';
+        f_originalPrice.value = data.originalPrice || '';
+        f_discount.value = data.discount || '';
+        f_category.value = data.category || 'Casa & Cozinha';
+        f_badge.value = data.badge || 'Mais Vendido';
+        f_rating.value = data.rating || 4.9;
+        f_reviewsCount.value = data.reviewsCount || 1200;
+        f_tags.value = (data.tags || []).join(', ');
+        f_description.value = data.description || '';
+        f_questionTitle.value = data.questionTitle || '';
+        f_reviewText.value = data.reviewText || '';
+        setSelectedBadgeColor(data.badgeColor || 'purple');
+        setPoints(data.positivePoints || []);
+
+        updatePreview();
+        showAlert('✨ Dados extraídos e preenchidos com sucesso! Revise e clique em "Salvar no Projeto".', 'success');
+
+        // Scroll to form
+        f_title.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch (err) {
+        console.error(err);
+        showAlert(`⚠️ Falha ao extrair automaticamente: ${err.message}. Você ainda pode preencher manualmente!`, 'error');
+        f_affiliateUrl.value = url;
+      } finally {
+        btnScrape.disabled = false;
+        btnScrapeText.textContent = '⚡ Extrair Dados & IA';
+        scrapeSpinner.classList.add('hidden');
+      }
+    });
+
+    // Save Product to Project via API
+    btnSaveProduct.addEventListener('click', async () => {
+      if (!f_title.value.trim() || !f_affiliateUrl.value.trim()) {
+        showAlert('⚠️ Por favor preencha pelo menos o Título e o Link de Afiliado.', 'error');
+        return;
+      }
+
+      btnSaveProduct.disabled = true;
+      saveSpinner.classList.remove('hidden');
+
+      const payload = {
+        title: f_title.value.trim(),
+        description: f_description.value.trim(),
+        price: f_price.value.trim(),
+        originalPrice: f_originalPrice.value.trim(),
+        discount: f_discount.value.trim(),
+        affiliateUrl: f_affiliateUrl.value.trim(),
+        affiliatePlatform: f_platform.value,
+        category: f_category.value.trim(),
+        badge: f_badge.value.trim(),
+        badgeColor: getSelectedBadgeColor(),
+        rating: parseFloat(f_rating.value) || 5.0,
+        reviewsCount: parseInt(f_reviewsCount.value, 10) || 0,
+        image: f_image.value.trim(),
+        featured: f_featured.checked,
+        tags: f_tags.value.split(',').map(t => t.trim().toLowerCase()).filter(Boolean),
+        questionTitle: f_questionTitle.value.trim(),
+        reviewText: f_reviewText.value.trim(),
+        positivePoints: getPoints()
+      };
+
+      try {
+        const res = await fetch('/api/admin/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Erro ao salvar arquivo');
+
+        showAlert(`🎉 <strong>Produto salvo com sucesso!</strong> Arquivo criado em <code>src/content/products/${data.filename}</code>. <a href="/produto/${data.slug}" target="_blank" class="underline font-bold ml-2">Ver na loja &rarr;</a>`, 'success');
+      } catch (err) {
+        console.error(err);
+        showAlert(`⚠️ Erro ao salvar: ${err.message}`, 'error');
+      } finally {
+        btnSaveProduct.disabled = false;
+        saveSpinner.classList.add('hidden');
+      }
+    });
+
+    // Copy Markdown to Clipboard
+    btnCopyMd.addEventListener('click', async () => {
+      const md = generateMarkdownString();
+      try {
+        await navigator.clipboard.writeText(md);
+        copyBtnText.textContent = 'Copiado! ✅';
+        setTimeout(() => { copyBtnText.textContent = 'Copiar .MD'; }, 2000);
+      } catch (err) {
+        console.error('Falha ao copiar:', err);
+      }
+    });
+
+    // Download .md file
+    btnDownloadMd.addEventListener('click', () => {
+      const md = generateMarkdownString();
+      const slug = slugify(f_title.value.trim() || 'novo-produto');
+      const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${slug}.md`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // Tab switching
+    tabBtnCard.addEventListener('click', () => {
+      tabBtnCard.className = 'flex-1 py-2 rounded-xl text-xs font-bold bg-white text-purple-900 shadow-xs transition-all';
+      tabBtnMarkdown.className = 'flex-1 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition-all';
+      previewCardView.classList.remove('hidden');
+      previewMarkdownView.classList.add('hidden');
+    });
+
+    tabBtnMarkdown.addEventListener('click', () => {
+      tabBtnMarkdown.className = 'flex-1 py-2 rounded-xl text-xs font-bold bg-white text-purple-900 shadow-xs transition-all';
+      tabBtnCard.className = 'flex-1 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition-all';
+      previewMarkdownView.classList.remove('hidden');
+      previewCardView.classList.add('hidden');
+    });
+
+    // Initial setup
+    setPoints(['Excelente acabamento e alta durabilidade', 'Super prático para usar no dia a dia']);
+    updatePreview();
+  });
+</script>
